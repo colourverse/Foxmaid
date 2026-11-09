@@ -1,0 +1,1567 @@
+<title>Foxmaid</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M3.5 4.5 L11.5 11 H20.5 L28.5 4.5 L27.5 17.5 L16 28.5 L4.5 17.5 Z%22 fill=%22%23DD5510%22/%3E%3Cpath d=%22M6.6 8.2 L10.2 11.3 L7 13.2 Z M25.4 8.2 L21.8 11.3 L25 13.2 Z%22 fill=%22%23B9450A%22/%3E%3Cpath d=%22M4.5 17.5 L16 28.5 L16 21.5 L10.5 16.5 Z M27.5 17.5 L16 28.5 L16 21.5 L21.5 16.5 Z%22 fill=%22%23FFF7F0%22/%3E%3Ccircle cx=%2211.6%22 cy=%2216.4%22 r=%221.5%22 fill=%22%231B2030%22/%3E%3Ccircle cx=%2220.4%22 cy=%2216.4%22 r=%221.5%22 fill=%22%231B2030%22/%3E%3Cpath d=%22M14.2 25.2 h3.6 l-1.8 2.2 z%22 fill=%22%231B2030%22/%3E%3Cpath d=%22M1 29.5 q3.75 -3 7.5 0 t7.5 0 t7.5 0 t7.5 0%22 fill=%22none%22 stroke=%22%230E8A8A%22 stroke-width=%222.4%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+<meta name="description" content="Foxmaid: a friendly Mermaid diagram editor and viewer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* CodeMirror 5.65.16 (MIT) */
+
+.CodeMirror {
+  
+  font-family: monospace;
+  height: 300px;
+  color: black;
+  direction: ltr;
+}
+.CodeMirror-lines {
+  padding: 4px 0; 
+}
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+  padding: 0 4px; 
+}
+.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  background-color: white; 
+}
+.CodeMirror-gutters {
+  border-right: 1px solid #ddd;
+  background-color: #f7f7f7;
+  white-space: nowrap;
+}
+.CodeMirror-linenumbers {}
+.CodeMirror-linenumber {
+  padding: 0 3px 0 5px;
+  min-width: 20px;
+  text-align: right;
+  color: #999;
+  white-space: nowrap;
+}
+.CodeMirror-guttermarker { color: black; }
+.CodeMirror-guttermarker-subtle { color: #999; }
+.CodeMirror-cursor {
+  border-left: 1px solid black;
+  border-right: none;
+  width: 0;
+}
+.CodeMirror div.CodeMirror-secondarycursor {
+  border-left: 1px solid silver;
+}
+.cm-fat-cursor .CodeMirror-cursor {
+  width: auto;
+  border: 0 !important;
+  background: #7e7;
+}
+.cm-fat-cursor div.CodeMirror-cursors {
+  z-index: 1;
+}
+.cm-fat-cursor .CodeMirror-line::selection,
+.cm-fat-cursor .CodeMirror-line > span::selection, 
+.cm-fat-cursor .CodeMirror-line > span > span::selection { background: transparent; }
+.cm-fat-cursor .CodeMirror-line::-moz-selection,
+.cm-fat-cursor .CodeMirror-line > span::-moz-selection,
+.cm-fat-cursor .CodeMirror-line > span > span::-moz-selection { background: transparent; }
+.cm-fat-cursor { caret-color: transparent; }
+@-moz-keyframes blink {
+  0% {}
+  50% { background-color: transparent; }
+  100% {}
+}
+@-webkit-keyframes blink {
+  0% {}
+  50% { background-color: transparent; }
+  100% {}
+}
+@keyframes blink {
+  0% {}
+  50% { background-color: transparent; }
+  100% {}
+}
+.CodeMirror-overwrite .CodeMirror-cursor {}
+.cm-tab { display: inline-block; text-decoration: inherit; }
+.CodeMirror-rulers {
+  position: absolute;
+  left: 0; right: 0; top: -50px; bottom: 0;
+  overflow: hidden;
+}
+.CodeMirror-ruler {
+  border-left: 1px solid #ccc;
+  top: 0; bottom: 0;
+  position: absolute;
+}
+.cm-s-default .cm-header {color: blue;}
+.cm-s-default .cm-quote {color: #090;}
+.cm-negative {color: #d44;}
+.cm-positive {color: #292;}
+.cm-header, .cm-strong {font-weight: bold;}
+.cm-em {font-style: italic;}
+.cm-link {text-decoration: underline;}
+.cm-strikethrough {text-decoration: line-through;}
+.cm-s-default .cm-keyword {color: #708;}
+.cm-s-default .cm-atom {color: #219;}
+.cm-s-default .cm-number {color: #164;}
+.cm-s-default .cm-def {color: #00f;}
+.cm-s-default .cm-variable,
+.cm-s-default .cm-punctuation,
+.cm-s-default .cm-property,
+.cm-s-default .cm-operator {}
+.cm-s-default .cm-variable-2 {color: #05a;}
+.cm-s-default .cm-variable-3, .cm-s-default .cm-type {color: #085;}
+.cm-s-default .cm-comment {color: #a50;}
+.cm-s-default .cm-string {color: #a11;}
+.cm-s-default .cm-string-2 {color: #f50;}
+.cm-s-default .cm-meta {color: #555;}
+.cm-s-default .cm-qualifier {color: #555;}
+.cm-s-default .cm-builtin {color: #30a;}
+.cm-s-default .cm-bracket {color: #997;}
+.cm-s-default .cm-tag {color: #170;}
+.cm-s-default .cm-attribute {color: #00c;}
+.cm-s-default .cm-hr {color: #999;}
+.cm-s-default .cm-link {color: #00c;}
+.cm-s-default .cm-error {color: #f00;}
+.cm-invalidchar {color: #f00;}
+.CodeMirror-composing { border-bottom: 2px solid; }
+div.CodeMirror span.CodeMirror-matchingbracket {color: #0b0;}
+div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
+.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }
+.CodeMirror-activeline-background {background: #e8f2ff;}
+/* The rest of this file contains styles related to the mechanics of
+   the editor. You probably shouldn't touch them. */
+.CodeMirror {
+  position: relative;
+  overflow: hidden;
+  background: white;
+}
+.CodeMirror-scroll {
+  overflow: scroll !important; 
+  
+  
+  margin-bottom: -50px; margin-right: -50px;
+  padding-bottom: 50px;
+  height: 100%;
+  outline: none; 
+  position: relative;
+  z-index: 0;
+}
+.CodeMirror-sizer {
+  position: relative;
+  border-right: 50px solid transparent;
+}
+/* The fake, visible scrollbars. Used to force redraw during scrolling
+   before actual scrolling happens, thus preventing shaking and
+   flickering artifacts. */
+.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  position: absolute;
+  z-index: 6;
+  display: none;
+  outline: none;
+}
+.CodeMirror-vscrollbar {
+  right: 0; top: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.CodeMirror-hscrollbar {
+  bottom: 0; left: 0;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+.CodeMirror-scrollbar-filler {
+  right: 0; bottom: 0;
+}
+.CodeMirror-gutter-filler {
+  left: 0; bottom: 0;
+}
+.CodeMirror-gutters {
+  position: absolute; left: 0; top: 0;
+  min-height: 100%;
+  z-index: 3;
+}
+.CodeMirror-gutter {
+  white-space: normal;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  margin-bottom: -50px;
+}
+.CodeMirror-gutter-wrapper {
+  position: absolute;
+  z-index: 4;
+  background: none !important;
+  border: none !important;
+}
+.CodeMirror-gutter-background {
+  position: absolute;
+  top: 0; bottom: 0;
+  z-index: 4;
+}
+.CodeMirror-gutter-elt {
+  position: absolute;
+  cursor: default;
+  z-index: 4;
+}
+.CodeMirror-gutter-wrapper ::selection { background-color: transparent }
+.CodeMirror-gutter-wrapper ::-moz-selection { background-color: transparent }
+.CodeMirror-lines {
+  cursor: text;
+  min-height: 1px; 
+}
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+  
+  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+  border-width: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  white-space: pre;
+  word-wrap: normal;
+  line-height: inherit;
+  color: inherit;
+  z-index: 2;
+  position: relative;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-variant-ligatures: contextual;
+  font-variant-ligatures: contextual;
+}
+.CodeMirror-wrap pre.CodeMirror-line,
+.CodeMirror-wrap pre.CodeMirror-line-like {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: normal;
+}
+.CodeMirror-linebackground {
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  z-index: 0;
+}
+.CodeMirror-linewidget {
+  position: relative;
+  z-index: 2;
+  padding: 0.1px; 
+}
+.CodeMirror-widget {}
+.CodeMirror-rtl pre { direction: rtl; }
+.CodeMirror-code {
+  outline: none;
+}
+.CodeMirror-scroll,
+.CodeMirror-sizer,
+.CodeMirror-gutter,
+.CodeMirror-gutters,
+.CodeMirror-linenumber {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.CodeMirror-measure {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+.CodeMirror-cursor {
+  position: absolute;
+  pointer-events: none;
+}
+.CodeMirror-measure pre { position: static; }
+div.CodeMirror-cursors {
+  visibility: hidden;
+  position: relative;
+  z-index: 3;
+}
+div.CodeMirror-dragcursors {
+  visibility: visible;
+}
+.CodeMirror-focused div.CodeMirror-cursors {
+  visibility: visible;
+}
+.CodeMirror-selected { background: #d9d9d9; }
+.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }
+.CodeMirror-crosshair { cursor: crosshair; }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: #d7d4f0; }
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #d7d4f0; }
+.cm-searching {
+  background-color: #ffa;
+  background-color: rgba(255, 255, 0, .4);
+}
+.cm-force-border { padding-right: .1px; }
+@media print {
+  
+  .CodeMirror div.CodeMirror-cursors {
+    visibility: hidden;
+  }
+}
+.cm-tab-wrap-hack:after { content: ''; }
+span.CodeMirror-selectedtext { background: none; }
+
+/* Foxmaid: the FoxEd workbench, with a sea-teal second accent. Code on the left, a pan-and-zoom diagram canvas on the right. */
+:root {
+  --ground: #E8EBF1; --panel: #FFFFFF; --panel-2: #F5F6F9; --line: #D8DCE5; --line-2: #C3C9D6;
+  --ink: #1B2030; --ink-2: #565E75; --ink-3: #868DA2;
+  --fox: #DD5510; --fox-2: #B9450A; --fox-soft: #FCE7DA; --on-fox: #FFFFFF;
+  --sea: #0E8A8A; --sea-2: #0A6F6F; --sea-soft: #DAF2F1; --on-sea: #FFFFFF;
+  --go: #16825A; --err: #CF3439; --err-soft: #FBE6E6; --warn: #A86F00; --warn-soft: #FFF2D2;
+  --code-bg: #FFFFFF; --gutter-bg: #F7F8FB; --gutter-ink: #A1A7B7; --active-line: #F4F6FB; --selection: #D5E2FF; --cursor: #DD5510; --flash: #FFE7A3;
+  --paper: #FFFFFF; --dot: #DCE0E8;
+  --t-type: #BF3E0A; --t-kw: #2550C2; --t-str: #0D7A4C; --t-num: #B0255A; --t-com: #8A91A4; --t-op: #0E8A8A; --t-br: #7A3BD8; --t-meta: #697086;
+  --shadow: 0 1px 2px rgb(20 26 40 / .06), 0 4px 14px rgb(20 26 40 / .07);
+  --shadow-pop: 0 8px 30px rgb(20 26 40 / .16), 0 1px 3px rgb(20 26 40 / .1);
+  --f-display: "Fredoka", "Figtree", system-ui, sans-serif;
+  --f-ui: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --code-size: 14px; --left: 40%; --drawer: 200px; --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0D1017; --panel: #161A23; --panel-2: #1B2029; --line: #282E3C; --line-2: #363D4F;
+    --ink: #E7EAF1; --ink-2: #A3ABBE; --ink-3: #6D7590;
+    --fox: #FF7B35; --fox-2: #FF965E; --fox-soft: #3A2216; --on-fox: #1A0D05;
+    --sea: #3CC7C2; --sea-2: #66D8D4; --sea-soft: #12302F; --on-sea: #041514;
+    --go: #2DB378; --err: #FF6B6F; --err-soft: #3B1B1E; --warn: #F0B43B; --warn-soft: #362A10;
+    --code-bg: #161A23; --gutter-bg: #141820; --gutter-ink: #4F576C; --active-line: #1C2130; --selection: #2A3A5E; --cursor: #FF7B35; --flash: #4A3A10;
+    --paper: #12161E; --dot: #252B38;
+    --t-type: #FF8E61; --t-kw: #80B1FF; --t-str: #7DD992; --t-num: #FF9BC2; --t-com: #69728A; --t-op: #3CC7C2; --t-br: #C5A7FF; --t-meta: #9AA3B8;
+    --shadow: 0 1px 2px rgb(0 0 0 / .35), 0 6px 18px rgb(0 0 0 / .28);
+    --shadow-pop: 0 10px 34px rgb(0 0 0 / .5), 0 1px 3px rgb(0 0 0 / .4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0D1017; --panel: #161A23; --panel-2: #1B2029; --line: #282E3C; --line-2: #363D4F;
+  --ink: #E7EAF1; --ink-2: #A3ABBE; --ink-3: #6D7590;
+  --fox: #FF7B35; --fox-2: #FF965E; --fox-soft: #3A2216; --on-fox: #1A0D05;
+  --sea: #3CC7C2; --sea-2: #66D8D4; --sea-soft: #12302F; --on-sea: #041514;
+  --go: #2DB378; --err: #FF6B6F; --err-soft: #3B1B1E; --warn: #F0B43B; --warn-soft: #362A10;
+  --code-bg: #161A23; --gutter-bg: #141820; --gutter-ink: #4F576C; --active-line: #1C2130; --selection: #2A3A5E; --cursor: #FF7B35; --flash: #4A3A10;
+  --paper: #12161E; --dot: #252B38;
+  --t-type: #FF8E61; --t-kw: #80B1FF; --t-str: #7DD992; --t-num: #FF9BC2; --t-com: #69728A; --t-op: #3CC7C2; --t-br: #C5A7FF; --t-meta: #9AA3B8;
+  --shadow: 0 1px 2px rgb(0 0 0 / .35), 0 6px 18px rgb(0 0 0 / .28);
+  --shadow-pop: 0 10px 34px rgb(0 0 0 / .5), 0 1px 3px rgb(0 0 0 / .4);
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--f-ui); font-size: 14px; overflow: hidden; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--fox); outline-offset: 2px; }
+kbd { font-family: var(--f-code); font-size: 11px; }
+
+.app { height: 100%; display: flex; flex-direction: column; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 12px; gap: 10px; box-sizing: border-box; }
+
+/* Top bar */
+.topbar { display: flex; align-items: center; gap: 14px; min-height: 56px; padding-top: 4px; }
+.brand { display: flex; align-items: center; gap: 8px; flex: none; }
+.brand svg { width: 32px; height: 32px; display: block; }
+.wordmark { font-family: var(--f-display); font-weight: 600; font-size: 24px; letter-spacing: -0.01em; }
+.wordmark b { color: var(--sea); font-weight: 600; }
+.proj { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 260px; }
+.proj-name { min-width: 0; width: 100%; border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 6px 8px; font-weight: 600; font-size: 15px; text-overflow: ellipsis; }
+.proj-name:hover { border-color: var(--line); }
+.proj-name:focus { border-color: var(--fox); background: var(--panel); outline: none; }
+.save-state { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.save-state.warn { color: var(--warn); }
+.tools { display: flex; align-items: center; gap: 8px; margin-left: auto; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; }
+.tools::-webkit-scrollbar { display: none; }
+.sep { width: 1px; height: 24px; background: var(--line); flex: none; }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-weight: 600; white-space: nowrap; flex: none; transition: background .12s, border-color .12s; }
+.btn:hover { border-color: var(--line-2); background: var(--panel-2); }
+.btn svg { width: 16px; height: 16px; flex: none; }
+.btn .caret { width: 12px; height: 12px; opacity: .6; }
+.btn-primary { background: var(--sea); border-color: var(--sea); color: var(--on-sea); }
+.btn-primary:hover { background: var(--sea-2); border-color: var(--sea-2); }
+.btn-primary kbd { opacity: .75; font-weight: 500; }
+.btn.ghost { background: transparent; border-color: transparent; }
+.btn.ghost:hover { background: var(--panel-2); border-color: var(--line); }
+.btn.sm { height: 28px; padding: 0 9px; font-size: 13px; }
+.icon-btn { width: 34px; height: 34px; flex: none; display: inline-grid; place-items: center; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-2); }
+.icon-btn:hover { color: var(--ink); border-color: var(--line-2); }
+.icon-btn[aria-pressed="true"] { color: var(--fox); background: var(--fox-soft); border-color: transparent; }
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn.sm { width: 30px; height: 30px; border-color: transparent; background: transparent; }
+.icon-btn.sm:hover { background: var(--panel-2); }
+
+.switch { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: var(--ink-2); cursor: pointer; flex: none; user-select: none; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch .track { width: 32px; height: 18px; border-radius: 99px; background: var(--line-2); position: relative; transition: background .15s; flex: none; }
+.switch .track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--panel); box-shadow: 0 1px 2px rgb(0 0 0 / .25); transition: transform .15s; }
+.switch input:checked + .track { background: var(--sea); }
+.switch input:checked + .track::after { transform: translateX(14px); }
+.switch input:focus-visible + .track { outline: 2px solid var(--fox); outline-offset: 2px; }
+
+.font-ctl { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); height: 34px; flex: none; }
+.font-ctl button { border: 0; background: transparent; width: 30px; height: 100%; font-weight: 700; color: var(--ink-2); }
+.font-ctl button:hover { color: var(--ink); }
+.font-ctl span { min-width: 24px; text-align: center; font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; }
+
+select.sel { height: 30px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); padding: 0 26px 0 9px; font-weight: 600; font-size: 13px; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23868DA2' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 12px; }
+
+/* Menus */
+.menu-wrap { position: relative; flex: none; }
+.menu { position: fixed; z-index: 50; min-width: 260px; max-width: min(380px, calc(100vw - 32px)); max-height: min(70vh, 560px); overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-pop); padding: 6px; }
+.menu h3 { margin: 6px 8px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); font-weight: 700; }
+.menu-item { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; border: 0; background: transparent; padding: 8px 10px; border-radius: 8px; }
+.menu-item:hover, .menu-item:focus-visible { background: var(--panel-2); }
+.menu-item svg { width: 18px; height: 18px; flex: none; color: var(--ink-2); margin-top: 1px; }
+.menu-item .mi-text { display: grid; gap: 1px; min-width: 0; }
+.menu-item .mi-title { font-weight: 600; }
+.menu-item .mi-sub { font-size: 12.5px; color: var(--ink-2); }
+.menu hr { border: 0; border-top: 1px solid var(--line); margin: 6px 4px; }
+.ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.ex-grid .menu-item { align-items: center; }
+.ex-ico { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; background: var(--sea-soft); color: var(--sea); flex: none; font-family: var(--f-code); font-weight: 700; font-size: 11px; }
+.menu.wide { min-width: min(460px, calc(100vw - 32px)); max-width: min(480px, calc(100vw - 32px)); }
+
+.proj-row { display: flex; align-items: center; gap: 4px; border-radius: 8px; }
+.proj-row:hover { background: var(--panel-2); }
+.proj-row .menu-item { flex: 1; min-width: 0; }
+.proj-row .menu-item:hover { background: transparent; }
+.proj-row.current .mi-title::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--fox); margin-right: 7px; vertical-align: 1px; }
+.proj-row .mi-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.proj-row .confirm { display: flex; gap: 4px; align-items: center; padding-right: 6px; font-size: 12.5px; color: var(--err); font-weight: 600; white-space: nowrap; }
+.proj-row .confirm button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 2px 8px; font-size: 12.5px; font-weight: 600; }
+.proj-row .confirm button.yes { background: var(--err); border-color: var(--err); color: #fff; }
+
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.set-row:hover { background: var(--panel-2); }
+.set-row .mi-sub { font-size: 12.5px; color: var(--ink-2); }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; padding: 4px 10px 8px; font-size: 13px; color: var(--ink-2); align-items: center; }
+.keys kbd { background: var(--panel-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--ink); white-space: nowrap; justify-self: start; }
+
+/* Workspace */
+.workspace { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, var(--left)) 10px minmax(0, 1fr); }
+.left { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.pane { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); }
+.pane-head { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 8px 0 12px; border-bottom: 1px solid var(--line); background: var(--panel-2); flex: none; user-select: none; min-width: 0; }
+.type-chip { font-weight: 700; font-size: 12px; letter-spacing: .04em; display: inline-flex; align-items: center; gap: 6px; color: var(--sea); white-space: nowrap; }
+.type-chip::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: currentColor; }
+.fname { font-family: var(--f-code); font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cursor-pos { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pane-body { flex: 1; min-height: 0; position: relative; }
+
+.drawer { height: var(--drawer); flex: none; display: flex; flex-direction: column; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); overflow: hidden; box-shadow: var(--shadow); min-height: 0; }
+.drawer.closed { height: auto; }
+.drawer.closed .drawer-body { display: none; }
+.drawer.closed .drawer-head { border-bottom: 0; }
+.drawer-head { display: flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; border-bottom: 1px solid var(--line); background: var(--panel-2); flex: none; min-height: 30px; }
+.drawer-head strong { font-size: 13px; white-space: nowrap; }
+.drawer-head .hint { font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.drawer-head .spacer { flex: 1; }
+.drawer-toggle svg { transition: transform .15s; }
+.drawer.closed .drawer-toggle svg { transform: rotate(180deg); }
+.drawer-body { flex: 1; min-height: 0; overflow: auto; }
+.cheat { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.cheat button { display: grid; gap: 2px; text-align: left; border: 0; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); background: transparent; padding: 8px 12px; min-width: 0; }
+.cheat button:hover { background: var(--panel-2); }
+.cheat code { font-family: var(--f-code); font-size: 12.5px; color: var(--ink); white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.cheat span { font-size: 12.5px; color: var(--ink-2); }
+
+/* Splitters */
+.gutter-v, .gutter-h { position: relative; touch-action: none; }
+.gutter-v { cursor: col-resize; }
+.gutter-h { cursor: row-resize; height: 10px; flex: none; }
+.gutter-v::after, .gutter-h::after { content: ""; position: absolute; border-radius: 3px; background: var(--fox); opacity: 0; transition: opacity .15s; }
+.gutter-v::after { width: 4px; height: 44px; left: 3px; top: calc(50% - 22px); }
+.gutter-h::after { height: 4px; width: 44px; top: 3px; left: calc(50% - 22px); }
+.gutter-v:hover::after, .gutter-h:hover::after, .gutter-v:focus-visible::after, .gutter-h:focus-visible::after, .dragging .gutter-v::after, .dragging .gutter-h::after { opacity: 1; }
+.dragging, .dragging * { user-select: none; }
+
+/* CodeMirror theme */
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like { font-variant-ligatures: none; -webkit-font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+.CodeMirror { height: 100%; font-family: var(--f-code); font-size: var(--code-size); line-height: 1.6; background: var(--code-bg); color: var(--ink); }
+.CodeMirror-gutters { background: var(--gutter-bg); border-right: 1px solid var(--line); }
+.CodeMirror-linenumber { color: var(--gutter-ink); padding: 0 8px 0 4px; font-size: 0.86em; }
+.CodeMirror-cursor { border-left: 2px solid var(--cursor); }
+.CodeMirror-activeline-background { background: var(--active-line); }
+.CodeMirror-activeline-gutter { background: var(--active-line); }
+.CodeMirror-activeline-gutter .CodeMirror-linenumber { color: var(--ink-2); }
+.CodeMirror-selected { background: var(--selection) !important; }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: var(--selection); }
+div.CodeMirror span.CodeMirror-matchingbracket { color: inherit; background: var(--selection); outline: 1px solid var(--line-2); }
+div.CodeMirror span.CodeMirror-nonmatchingbracket { color: var(--err); }
+.CodeMirror-lines { padding: 8px 0; }
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like { padding: 0 12px 0 8px; }
+.cm-s-default .cm-def { color: var(--t-type); font-weight: 700; }
+.cm-s-default .cm-keyword { color: var(--t-kw); font-weight: 500; }
+.cm-s-default .cm-string { color: var(--t-str); }
+.cm-s-default .cm-number { color: var(--t-num); }
+.cm-s-default .cm-comment { color: var(--t-com); font-style: italic; }
+.cm-s-default .cm-operator { color: var(--t-op); font-weight: 700; }
+.cm-s-default .cm-bracket { color: var(--t-br); }
+.cm-s-default .cm-meta { color: var(--t-meta); }
+.cm-s-default .cm-atom { color: var(--t-num); }
+.cm-s-default .cm-variable-2 { color: var(--t-meta); }
+.err-line { background: color-mix(in srgb, var(--err) 11%, transparent); }
+.err-gutter { width: 14px; }
+.err-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--err); margin: 7px 0 0 3px; }
+.flash-line { background: var(--flash) !important; }
+
+/* Viewer */
+.viewer { min-height: 0; min-width: 0; display: flex; flex-direction: column; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); overflow: hidden; box-shadow: var(--shadow); }
+.viewer-bar { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-bottom: 1px solid var(--line); background: var(--panel-2); flex: none; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.viewer-bar::-webkit-scrollbar { display: none; }
+.viewer-bar .spacer { flex: 1; min-width: 4px; }
+.status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--ink-2); flex: none; padding-left: 4px; }
+.status-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--go); }
+.status-pill[data-state="busy"]::before { background: var(--warn); }
+.status-pill[data-state="error"] { color: var(--err); }
+.status-pill[data-state="error"]::before { background: var(--err); }
+.zoom { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); height: 30px; flex: none; }
+.zoom button { border: 0; background: transparent; width: 28px; height: 100%; display: grid; place-items: center; color: var(--ink-2); }
+.zoom button:hover { color: var(--ink); }
+.zoom button svg { width: 16px; height: 16px; }
+.zoom .zval { border: 0; background: transparent; min-width: 46px; width: auto; padding: 0 4px; font-variant-numeric: tabular-nums; font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.stage { flex: 1; min-height: 0; position: relative; overflow: hidden; background-color: var(--paper); cursor: grab; touch-action: none; }
+.stage.grid { background-image: radial-gradient(var(--dot) 1.2px, transparent 1.3px); background-size: 20px 20px; }
+.stage.panning { cursor: grabbing; }
+.pz { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.pz svg { display: block; max-width: none !important; }
+.pz.stale { opacity: .35; filter: grayscale(.6); transition: opacity .2s; }
+.empty-state { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--ink-3); padding: 24px; pointer-events: none; line-height: 1.5; }
+.empty-state strong { display: block; color: var(--ink-2); font-size: 15px; margin-bottom: 2px; }
+
+.err-card { position: absolute; left: 12px; right: 12px; bottom: 12px; max-width: 640px; margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--err); border-radius: 10px; box-shadow: var(--shadow-pop); padding: 10px 12px; display: grid; gap: 6px; cursor: default; }
+.err-card .eh { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.err-card .eh strong { color: var(--err); }
+.err-card .eh .note { color: var(--ink-3); font-size: 12.5px; }
+.err-card .tip { font-size: 13.5px; line-height: 1.45; }
+.err-card .tip b { color: var(--fox); }
+.err-card pre { margin: 0; font-family: var(--f-code); font-size: 12px; color: var(--ink-2); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; max-height: 88px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+.err-card .eh .btn { margin-left: auto; }
+.size-tag { position: absolute; right: 8px; top: 8px; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; background: var(--panel); color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; pointer-events: none; opacity: .92; }
+
+.viewer:fullscreen { border-radius: 0; border: 0; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: var(--panel); padding: 9px 16px; border-radius: 10px; font-weight: 600; font-size: 13.5px; box-shadow: var(--shadow-pop); pointer-events: none; z-index: 400; transition: opacity .18s, transform .18s; max-width: calc(100vw - 32px); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.fatal { padding: 24px; line-height: 1.6; color: var(--ink-2); }
+
+/* Mobile */
+.mobile-nav { display: none; }
+@media (max-width: 820px) {
+  .topbar { flex-wrap: wrap; gap: 6px 10px; min-height: 0; padding-top: 8px; }
+  .proj { flex: 1 1 140px; }
+  .tools { flex: 1 0 100%; margin-left: 0; }
+  .btn-primary kbd, .hide-sm { display: none; }
+  .workspace { display: flex; flex-direction: column; }
+  .gutter-v, .gutter-h { display: none; }
+  .left, .viewer { flex: 1; min-height: 0; }
+  .drawer { height: 34%; }
+  .app[data-mview="diagram"] .left { display: none; }
+  .app:not([data-mview="diagram"]) .viewer { display: none; }
+  .left { gap: 8px; }
+  .mobile-nav { display: flex; gap: 4px; flex: none; padding: 4px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); margin-bottom: env(safe-area-inset-bottom, 0px); }
+  .mobile-nav button { flex: 1; height: 38px; border: 0; border-radius: 9px; background: transparent; font-weight: 700; font-size: 13px; color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .mobile-nav button[aria-selected="true"] { background: var(--panel-2); color: var(--ink); }
+  .mobile-nav .mdot { width: 8px; height: 8px; border-radius: 50%; background: var(--err); }
+  .status-pill span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+.stage[data-paper="light"] { --paper: #FFFFFF; --dot: #DCE0E8; }
+.stage[data-paper="dark"] { --paper: #12161E; --dot: #2A303D; }
+</style>
+
+<div id="app" class="app" data-mview="code">
+  <header class="topbar">
+    <div class="brand" aria-label="Foxmaid">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M3.5 4.5 L11.5 11 H20.5 L28.5 4.5 L27.5 17.5 L16 28.5 L4.5 17.5 Z" fill="var(--fox)"/>
+        <path d="M6.6 8.2 L10.2 11.3 L7 13.2 Z M25.4 8.2 L21.8 11.3 L25 13.2 Z" fill="var(--fox-2)"/>
+        <path d="M4.5 17.5 L16 28.5 L16 21.5 L10.5 16.5 Z M27.5 17.5 L16 28.5 L16 21.5 L21.5 16.5 Z" fill="#FFF7F0"/>
+        <circle cx="11.6" cy="16.4" r="1.5" fill="#1B2030"/>
+        <circle cx="20.4" cy="16.4" r="1.5" fill="#1B2030"/>
+        <path d="M14.2 25.2 h3.6 l-1.8 2.2 z" fill="#1B2030"/>
+        <path d="M1 30 q3.75 -3 7.5 0 t7.5 0 t7.5 0 t7.5 0" fill="none" stroke="var(--sea)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="wordmark">Fox<b>maid</b></span>
+    </div>
+    <div class="proj">
+      <input id="projName" class="proj-name" aria-label="Diagram name" spellcheck="false" maxlength="60">
+      <span id="saveState" class="save-state" aria-live="polite"></span>
+    </div>
+    <div class="tools">
+      <button id="btnRender" class="btn btn-primary" title="Draw the diagram (Ctrl+Enter)">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4c0 .5.6.8 1 .5l8-5.2a.6.6 0 0 0 0-1l-8-5.2c-.4-.3-1 0-1 .5Z" fill="currentColor"/></svg>
+        Draw <kbd>Ctrl ↵</kbd>
+      </button>
+      <label class="switch" title="Redraw the diagram as you type">
+        <input type="checkbox" id="optAuto"><span class="track"></span><span>Live</span>
+      </label>
+      <span class="sep"></span>
+      <div class="menu-wrap">
+        <button class="btn" data-menu="examplesMenu" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3" width="6" height="5" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="11.5" y="12" width="6" height="5" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 8v3.5c0 .8.7 1.5 1.5 1.5h4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Examples <svg class="caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="examplesMenu" class="menu wide" role="menu" hidden></div>
+      </div>
+      <div class="menu-wrap">
+        <button class="btn" data-menu="projectsMenu" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.8 5.5c0-.8.6-1.4 1.4-1.4h3.4l1.7 1.8h6.5c.8 0 1.4.6 1.4 1.4v7.5c0 .8-.6 1.4-1.4 1.4H4.2c-.8 0-1.4-.6-1.4-1.4V5.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Diagrams <svg class="caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="projectsMenu" class="menu" role="menu" hidden></div>
+      </div>
+      <div class="menu-wrap">
+        <button class="btn" data-menu="fileMenu" aria-haspopup="true" aria-expanded="false">
+          File <svg class="caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="fileMenu" class="menu" role="menu" hidden>
+          <h3>Picture</h3>
+          <button class="menu-item" data-act="png"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="7.5" cy="8.5" r="1.4" fill="currentColor"/><path d="m4 15 4.5-4.5 3 3 2-2L17 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span class="mi-text"><span class="mi-title">Download as .png</span><span class="mi-sub">A sharp picture for slides, docs and posters</span></span></button>
+          <button class="menu-item" data-act="svg"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 15 9 5l2.5 5L13 7.5 16 15Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span class="mi-text"><span class="mi-title">Download as .svg</span><span class="mi-sub">Scales to any size without going blurry</span></span></button>
+          <button class="menu-item" data-act="copy-svg"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6.5" y="6.5" width="10" height="10" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 4.5v-.2c0-.7-.6-1.3-1.3-1.3H4.8c-.7 0-1.3.6-1.3 1.3v7.4c0 .7.6 1.3 1.3 1.3H5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="mi-text"><span class="mi-title">Copy SVG code</span><span class="mi-sub">Paste straight into an HTML page</span></span></button>
+          <h3>Code</h3>
+          <button class="menu-item" data-act="md"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m0 0-3.5-3.5M10 12l3.5-3.5M4 14.5v1.2c0 .7.6 1.3 1.3 1.3h9.4c.7 0 1.3-.6 1.3-1.3v-1.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mi-text"><span class="mi-title">Download as .md</span><span class="mi-sub">A Markdown file that GitHub and Notion draw for you</span></span></button>
+          <button class="menu-item" data-act="copy-code"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6.5" y="6.5" width="10" height="10" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 4.5v-.2c0-.7-.6-1.3-1.3-1.3H4.8c-.7 0-1.3.6-1.3 1.3v7.4c0 .7.6 1.3 1.3 1.3H5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="mi-text"><span class="mi-title">Copy Mermaid code</span><span class="mi-sub">Just the diagram text</span></span></button>
+          <button class="menu-item" data-act="copy-md"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 6 3 10l4 4M13 6l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mi-text"><span class="mi-title">Copy as Markdown block</span><span class="mi-sub">Wrapped in <code>```mermaid</code> for a README</span></span></button>
+          <button class="menu-item" data-act="open"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V4m0 0L6.5 7.5M10 4l3.5 3.5M4 14.5v1.2c0 .7.6 1.3 1.3 1.3h9.4c.7 0 1.3-.6 1.3-1.3v-1.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mi-text"><span class="mi-title">Open a file…</span><span class="mi-sub">.mmd, .mermaid, .txt, or a .md with a mermaid block</span></span></button>
+        </div>
+      </div>
+      <span class="sep"></span>
+      <button class="icon-btn" id="btnWrap" title="Wrap long lines" aria-label="Wrap long lines">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h11a2.5 2.5 0 0 1 0 5h-3m0 0 1.8-1.8M11 15l1.8 1.8M3 15h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="font-ctl" role="group" aria-label="Code text size">
+        <button id="fontDown" title="Smaller code text" aria-label="Smaller code text">A−</button>
+        <span id="fontVal">14</span>
+        <button id="fontUp" title="Bigger code text (good for projectors)" aria-label="Bigger code text">A+</button>
+      </div>
+      <button class="icon-btn" id="btnTheme" title="Theme: match system" aria-label="Change theme"></button>
+      <div class="menu-wrap">
+        <button class="icon-btn" data-menu="settingsMenu" title="Settings and shortcuts" aria-label="Settings" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h7m4 0h1M4 14h1m4 0h7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="13" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="14" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <div id="settingsMenu" class="menu" role="menu" hidden>
+          <h3>Editor</h3>
+          <label class="set-row" for="optClose"><span class="mi-text"><span class="mi-title">Auto-close brackets</span><br><span class="mi-sub">Typing [ adds ], typing " adds "</span></span><span class="switch"><input type="checkbox" id="optClose"><span class="track"></span></span></label>
+          <h3>Diagram</h3>
+          <label class="set-row" for="optGrid"><span class="mi-text"><span class="mi-title">Dotted background</span><br><span class="mi-sub">Only on screen; downloads stay plain</span></span><span class="switch"><input type="checkbox" id="optGrid"><span class="track"></span></span></label>
+          <label class="set-row" for="optKeep"><span class="mi-text"><span class="mi-title">Keep zoom while editing</span><br><span class="mi-sub">Off: fit the diagram after every redraw</span></span><span class="switch"><input type="checkbox" id="optKeep"><span class="track"></span></span></label>
+          <h3>Shortcuts</h3>
+          <div class="keys">
+            <kbd>Ctrl Enter</kbd><span>Draw</span>
+            <kbd>Ctrl S</kbd><span>Save now</span>
+            <kbd>Ctrl /</kbd><span>Comment or uncomment lines</span>
+            <kbd>Scroll</kbd><span>Zoom the diagram</span>
+            <kbd>Drag</kbd><span>Move the diagram</span>
+            <kbd>0</kbd><span>Fit diagram (when the diagram has focus)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <section class="left" aria-label="Diagram code">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="type-chip" id="typeChip">FLOWCHART</span><span class="fname" id="fname">diagram.mmd</span>
+          <span class="cursor-pos" id="cursorPos"></span>
+        </div>
+        <div class="pane-body" id="editor"></div>
+      </div>
+      <div class="gutter-h" id="splitH" role="separator" aria-orientation="horizontal" aria-label="Resize code and cheat sheet" tabindex="0"></div>
+      <div class="drawer" id="drawer">
+        <div class="drawer-head">
+          <strong>Cheat sheet</strong><span class="hint" id="cheatHint">Click one to add it on a new line</span>
+          <span class="spacer"></span>
+          <button class="icon-btn sm drawer-toggle" id="drawerToggle" aria-label="Show or hide the cheat sheet" aria-expanded="true"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 5.2 7 8.7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="drawer-body"><div class="cheat" id="cheat"></div></div>
+      </div>
+    </section>
+
+    <div class="gutter-v" id="splitV" role="separator" aria-orientation="vertical" aria-label="Resize code and diagram" tabindex="0"></div>
+
+    <section class="viewer" id="viewer" aria-label="Diagram">
+      <div class="viewer-bar">
+        <span class="status-pill" id="statusPill" data-state="ok"><span>Drawn</span></span>
+        <span class="spacer"></span>
+        <select class="sel" id="selTheme" aria-label="Diagram colours" title="Diagram colours">
+          <option value="auto">Colours: Auto</option>
+          <option value="default">Default</option>
+          <option value="neutral">Neutral</option>
+          <option value="forest">Forest</option>
+          <option value="dark">Dark</option>
+          <option value="base">Base</option>
+        </select>
+        <select class="sel" id="selLook" aria-label="Drawing style" title="Drawing style (flowcharts and state diagrams)">
+          <option value="classic">Classic</option>
+          <option value="handDrawn">Sketchy</option>
+        </select>
+        <div class="zoom" role="group" aria-label="Zoom">
+          <button id="zOut" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 8h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+          <button class="zval" id="zVal" title="Show at actual size (100%)">100%</button>
+          <button id="zIn" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 8h8M8 4v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+        <button class="btn sm" id="zFit" title="Fit the diagram in view (0)">Fit</button>
+        <button class="icon-btn sm" id="btnFull" title="Full screen" aria-label="Full screen"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 7.5v-4h4M12.5 3.5h4v4M16.5 12.5v4h-4M7.5 16.5h-4v-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div class="stage grid" id="stage" tabindex="0" aria-label="Diagram canvas. Scroll to zoom, drag to move.">
+        <div class="pz" id="pz"></div>
+        <div class="empty-state" id="emptyState" hidden><div><strong>Nothing to draw yet</strong>Start with a diagram type, like <code>flowchart TD</code>, or pick one from Examples.</div></div>
+        <div class="size-tag" id="sizeTag" hidden></div>
+        <div class="err-card" id="errCard" hidden>
+          <div class="eh"><strong id="errTitle">Mermaid got stuck</strong><span class="note" id="errNote">Showing the last diagram that worked</span><button class="btn sm" id="errGo">Go to line</button></div>
+          <div class="tip" id="errTip"></div>
+          <pre id="errRaw"></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="mobile-nav" id="mobileNav" role="tablist" aria-label="Choose what to show">
+    <button role="tab" data-mv="code" aria-selected="true">Code</button>
+    <button role="tab" data-mv="diagram" aria-selected="false">Diagram<span class="mdot" id="mDot" hidden></span></button>
+  </nav>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="fileInput" accept=".mmd,.mermaid,.md,.markdown,.txt,text/plain,text/markdown" hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/mode/simple.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/edit/closebrackets.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/edit/matchbrackets.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/selection/active-line.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/comment/comment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const app = $('#app');
+
+if (!window.CodeMirror || !window.mermaid) {
+  document.body.innerHTML = '<div class="fatal"><strong>Foxmaid couldn’t load.</strong><br>The editor or the Mermaid library didn’t download. Check your internet connection and reload the page.</div>';
+  return;
+}
+
+/* ---------- Storage (per-browser) ---------- */
+const store = {
+  ok: true,
+  get(k, d) { try { const v = localStorage.getItem('foxmaid:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('foxmaid:' + k, JSON.stringify(v)); this.ok = true; } catch (e) { this.ok = false; } return this.ok; }
+};
+
+/* ---------- Examples ---------- */
+const EXAMPLES = [
+  { name: 'Flowchart', ico: '→', sub: 'Steps and decisions', code:
+`flowchart TD
+    A([Wake up]) --> B{Is it a school day?}
+    B -- Yes --> C[Pack your bag]
+    B -- No --> D[Sleep in]
+    C --> E[Catch the bus]
+    D --> F((Pancakes))
+    E --> G[Learn something new]
+    F --> G` },
+  { name: 'Sequence', ico: '⇄', sub: 'Who talks to whom, in order', code:
+`sequenceDiagram
+    autonumber
+    actor Student
+    participant Browser
+    participant Server
+    Student->>Browser: Types a web address
+    Browser->>Server: GET /index.html
+    activate Server
+    Server-->>Browser: 200 OK + the HTML
+    deactivate Server
+    Browser->>Student: Shows the page
+    Note over Browser,Server: This round trip usually takes milliseconds` },
+  { name: 'Class', ico: 'C', sub: 'Objects, fields and methods', code:
+`classDiagram
+    class Animal {
+        +String name
+        +int age
+        +makeSound() void
+    }
+    class Fox {
+        +String tailColour
+        +pounce() void
+    }
+    class Fish {
+        +int fins
+        +swim() void
+    }
+    Animal <|-- Fox
+    Animal <|-- Fish
+    Fox ..> Fish : hunts` },
+  { name: 'State', ico: '◉', sub: 'Things that change state', code:
+`stateDiagram-v2
+    [*] --> Idle
+    Idle --> Loading : click Run
+    Loading --> Ready : success
+    Loading --> Error : failure
+    Error --> Idle : try again
+    Ready --> [*]` },
+  { name: 'Entity relationship', ico: 'ER', sub: 'Database tables and links', code:
+`erDiagram
+    STUDENT ||--o{ ENROLMENT : makes
+    COURSE ||--o{ ENROLMENT : has
+    TEACHER ||--|{ COURSE : teaches
+    STUDENT {
+        int id PK
+        string name
+        date born
+    }
+    COURSE {
+        string code PK
+        string title
+    }
+    ENROLMENT {
+        int student_id FK
+        string course_code FK
+        string grade
+    }` },
+  { name: 'Gantt', ico: '▤', sub: 'A project plan over time', code:
+`gantt
+    title Science fair project
+    dateFormat YYYY-MM-DD
+    section Plan
+    Pick a question     :done, a1, 2026-11-02, 3d
+    Research            :active, a2, after a1, 5d
+    section Build
+    Run the experiment  :b1, after a2, 7d
+    Make the poster     :b2, after b1, 4d
+    section Present
+    Fair day            :milestone, m1, after b2, 0d` },
+  { name: 'Pie chart', ico: '◔', sub: 'Parts of a whole', code:
+`pie showData
+    title How we get to school
+    "Walk" : 38
+    "Bus" : 27
+    "Car" : 22
+    "Bike" : 13` },
+  { name: 'Mind map', ico: '✳', sub: 'Ideas branching out', code:
+`mindmap
+  root((Web page))
+    HTML
+      Headings
+      Links
+      Images
+    CSS
+      Colours
+      Layout
+    JavaScript
+      Events
+      Variables` },
+  { name: 'Timeline', ico: '⋯', sub: 'Events in order', code:
+`timeline
+    title A short history of the web
+    1989 : Tim Berners-Lee proposes the Web
+    1993 : Mosaic browser
+    1995 : JavaScript is born
+    1996 : CSS level 1
+    2008 : Chrome launches
+    2014 : HTML5 becomes a standard` },
+  { name: 'Git graph', ico: '⑂', sub: 'Branches and merges', code:
+`gitGraph
+    commit id: "Start"
+    commit id: "Add page"
+    branch feature
+    checkout feature
+    commit id: "New menu"
+    commit id: "Fix colours"
+    checkout main
+    commit id: "Hotfix"
+    merge feature
+    commit id: "Release" tag: "v1.0"` },
+  { name: 'User journey', ico: '☺', sub: 'How a day feels', code:
+`journey
+    title A morning at school
+    section Arrive
+      Get off the bus: 4: Student
+      Find my locker: 3: Student
+    section Class
+      Coding lesson: 5: Student, Teacher
+      Maths quiz: 2: Student
+    section Break
+      Lunch with friends: 5: Student` },
+  { name: 'Quadrant', ico: '⊞', sub: 'Sort things on two scales', code:
+`quadrantChart
+    title Which project should we do?
+    x-axis Low effort --> High effort
+    y-axis Low fun --> High fun
+    quadrant-1 Big adventures
+    quadrant-2 Quick wins
+    quadrant-3 Skip it
+    quadrant-4 Chores
+    Paper robot: [0.3, 0.8]
+    Weather app: [0.7, 0.75]
+    Tidy the desk: [0.2, 0.15]
+    Spreadsheet: [0.65, 0.3]` },
+  { name: 'XY chart', ico: '▥', sub: 'Bars and lines', code:
+`xychart-beta
+    title "Books read each month"
+    x-axis [Sep, Oct, Nov, Dec, Jan, Feb]
+    y-axis "Books" 0 --> 12
+    bar [3, 5, 8, 4, 7, 10]
+    line [3, 5, 8, 4, 7, 10]` }
+];
+
+const STARTER =
+`%% Welcome to Foxmaid! Change the words below and watch the diagram update.
+%% Lines that start with %% are comments.
+flowchart LR
+    idea([Have an idea]) --> sketch[Sketch it in Mermaid]
+    sketch --> look{Looks right?}
+    look -- Not yet --> sketch
+    look -- Yes! --> share[/Download and share/]`;
+
+/* ---------- Cheat sheets ---------- */
+const CHEATS = {
+  flowchart: [
+    ['A[Box]', 'Rectangle'], ['B(Rounded)', 'Rounded box'], ['C([Stadium])', 'Pill shape'], ['D{Question?}', 'Diamond, for a decision'],
+    ['E((Circle))', 'Circle'], ['F[/Input/]', 'Slanted, for input or output'], ['G[(Database)]', 'Cylinder'], ['A --> B', 'Arrow'],
+    ['A --- B', 'Line, no arrow'], ['A -.-> B', 'Dotted arrow'], ['A ==> B', 'Thick arrow'], ['A -- label --> B', 'Arrow with words'],
+    ['A --> B & C', 'One to many'], ['subgraph Title\n    A --> B\nend', 'Group nodes in a box'],
+    ['classDef hot fill:#fce7da,stroke:#dd5510', 'Make a style'], ['class A hot', 'Use a style'], ['style A fill:#daf2f1', 'Colour one node']
+  ],
+  sequenceDiagram: [
+    ['participant A as Alice', 'Add someone (box)'], ['actor B as Bob', 'Add someone (stick figure)'], ['A->>B: Hello', 'Message'],
+    ['B-->>A: Hi back', 'Reply (dotted)'], ['A-)B: Later', 'Message that doesn’t wait'], ['A-xB: Lost', 'Message that fails'],
+    ['Note right of A: Thinking', 'A note'], ['Note over A,B: Both', 'A note across two'], ['loop Every minute\n    A->>B: Ping\nend', 'Repeat'],
+    ['alt Sunny\n    A->>B: Go out\nelse Rainy\n    A->>B: Stay in\nend', 'Either / or'], ['opt Hungry\n    A->>B: Snack\nend', 'Only sometimes'],
+    ['activate B', 'Show B is busy'], ['deactivate B', 'B is done'], ['autonumber', 'Number every message']
+  ],
+  classDiagram: [
+    ['class Dog {\n    +String name\n    +bark() void\n}', 'A class with members'], ['Animal <|-- Dog', 'Inherits from'], ['Car *-- Wheel', 'Is made of (composition)'],
+    ['Team o-- Player', 'Has (aggregation)'], ['Dog --> Bone', 'Uses'], ['Dog ..> Ball : plays with', 'Depends on'], ['Owner "1" --> "*" Dog', 'How many'],
+    ['+public', 'Public'], ['-private', 'Private'], ['#protected', 'Protected']
+  ],
+  stateDiagram: [
+    ['[*] --> First', 'Start'], ['Last --> [*]', 'End'], ['A --> B : event', 'Change, with a reason'], ['state "Long name" as L', 'A state with spaces'],
+    ['state Busy {\n    [*] --> Working\n    Working --> [*]\n}', 'States inside a state'], ['state choice <<choice>>', 'A decision'], ['note right of A : Hello', 'A note'], ['direction LR', 'Lay out sideways']
+  ],
+  erDiagram: [
+    ['A ||--|| B : has', 'Exactly one to exactly one'], ['A ||--o{ B : has', 'One to zero or more'], ['A ||--|{ B : has', 'One to one or more'],
+    ['A }o--o{ B : has', 'Many to many'], ['A {\n    int id PK\n    string name\n}', 'Table with columns'], ['int other_id FK', 'Foreign key column']
+  ],
+  gantt: [
+    ['title My plan', 'Title'], ['dateFormat YYYY-MM-DD', 'How dates are written'], ['section Part one', 'Group of tasks'],
+    ['Task :t1, 2026-11-10, 3d', 'Task with start and length'], ['Next task :t2, after t1, 2d', 'Starts when another ends'],
+    ['Done task :done, t3, after t2, 1d', 'Finished'], ['Now :active, t4, after t3, 2d', 'In progress'], ['Important :crit, t5, after t4, 1d', 'Critical'],
+    ['Big day :milestone, m1, after t5, 0d', 'Milestone'], ['excludes weekends', 'Skip weekends']
+  ],
+  pie: [['title My pie', 'Title'], ['"Slice" : 42', 'A slice and its number'], ['pie showData', 'Show the numbers (first line)']],
+  mindmap: [['root((Big idea))', 'The middle (indent everything under it)'], ['  Child', 'A branch (indent more to go deeper)'], ['  [Square]', 'Square node'], ['  (Rounded)', 'Rounded node'], ['  ))Bang((', 'Bang shape'], ['  {{Hexagon}}', 'Hexagon'], ['  ::icon(fa fa-star)', 'Icon']],
+  timeline: [['title My timeline', 'Title'], ['2026 : Something happened', 'An event'], ['     : And another thing', 'Another event, same time'], ['section Long ago', 'Group of periods']],
+  gitGraph: [['commit', 'Save a change'], ['commit id: "Name"', 'Named commit'], ['branch feature', 'Start a branch'], ['checkout main', 'Switch branch'], ['merge feature', 'Join a branch back'], ['commit tag: "v1"', 'Tagged commit'], ['cherry-pick id: "Name"', 'Copy one commit']],
+  journey: [['title My day', 'Title'], ['section Morning', 'Part of the journey'], ['  Task: 5: Me', 'Step, score 1 to 5, who'], ['  Task: 3: Me, You', 'Step with two people']],
+  quadrantChart: [['x-axis Low --> High', 'Left and right labels'], ['y-axis Low --> High', 'Bottom and top labels'], ['quadrant-1 Name', 'Top right'], ['quadrant-2 Name', 'Top left'], ['quadrant-3 Name', 'Bottom left'], ['quadrant-4 Name', 'Bottom right'], ['Point: [0.5, 0.5]', 'A dot (x, y from 0 to 1)']],
+  'xychart-beta': [['title "My chart"', 'Title'], ['x-axis [a, b, c]', 'Labels along the bottom'], ['y-axis "Score" 0 --> 100', 'Side axis and range'], ['bar [1, 2, 3]', 'Bars'], ['line [1, 2, 3]', 'Line'], ['xychart-beta horizontal', 'Sideways (first line)']],
+  _start: [['flowchart TD', 'Flowchart, top to bottom'], ['flowchart LR', 'Flowchart, left to right'], ['sequenceDiagram', 'Sequence diagram'], ['classDiagram', 'Class diagram'], ['stateDiagram-v2', 'State diagram'], ['erDiagram', 'Entity relationship'], ['gantt', 'Gantt chart'], ['pie', 'Pie chart'], ['mindmap', 'Mind map'], ['timeline', 'Timeline'], ['gitGraph', 'Git graph'], ['journey', 'User journey']]
+};
+const CHEAT_ALIAS = { graph: 'flowchart', 'stateDiagram-v2': 'stateDiagram' };
+const TYPE_LABEL = {
+  flowchart: 'Flowchart', graph: 'Flowchart', sequenceDiagram: 'Sequence', classDiagram: 'Class', stateDiagram: 'State', 'stateDiagram-v2': 'State',
+  erDiagram: 'Entity relationship', gantt: 'Gantt', pie: 'Pie chart', journey: 'User journey', mindmap: 'Mind map', timeline: 'Timeline',
+  gitGraph: 'Git graph', quadrantChart: 'Quadrant', 'xychart-beta': 'XY chart', 'sankey-beta': 'Sankey', 'block-beta': 'Block',
+  requirementDiagram: 'Requirement', 'packet-beta': 'Packet', 'architecture-beta': 'Architecture', kanban: 'Kanban',
+  C4Context: 'C4', C4Container: 'C4', C4Component: 'C4', C4Dynamic: 'C4', C4Deployment: 'C4'
+};
+const TYPES_RE = Object.keys(TYPE_LABEL).map(t => t.replace(/[-]/g, '\\-')).sort((a, b) => b.length - a.length).join('|');
+
+function frontmatterLines(code) {
+  const m = /^\s*---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*(\r?\n|$)/.exec(code);
+  return m ? m[0].split('\n').length - (m[1] ? 1 : 0) : 0;
+}
+// Mermaid drops front matter and %% comment lines before parsing, so its line numbers skip them.
+function sourceLine(code, n) {
+  const lines = code.split('\n');
+  let count = 0;
+  for (let i = frontmatterLines(code); i < lines.length; i++) {
+    if (/^\s*%%/.test(lines[i])) continue;
+    if (++count === n) return i + 1;
+  }
+  return lines.length;
+}
+function detectType(code) {
+  const lines = code.split('\n');
+  let i = frontmatterLines(code);
+  for (; i < lines.length; i++) {
+    const l = lines[i].trim();
+    if (!l || l.startsWith('%%')) continue;
+    return l.split(/[\s:;]+/)[0];
+  }
+  return '';
+}
+
+/* ---------- CodeMirror ---------- */
+CodeMirror.defineSimpleMode('mermaid', {
+  start: [
+    { regex: /%%\{/, token: 'meta', next: 'directive' },
+    { regex: /%%.*/, token: 'comment' },
+    { regex: /---\s*$/, sol: true, token: 'meta', next: 'front' },
+    { regex: new RegExp('(\\s*)(' + TYPES_RE + ')(?![\\w-])'), sol: true, token: [null, 'def'] },
+    { regex: /"(?:[^"\\]|\\.)*"?/, token: 'string' },
+    { regex: /<\|--|--\|>|\*--|--\*|o--|--o\b|[|}][|o]--[|o][|{]|[|}][|o]\.\.[|o][|{]/, token: 'operator' },
+    { regex: /<{0,2}[-=.~]{2,}[>xo)]{0,2}|-[)x]|->>|-->>|-->|->|==>/, token: 'operator' },
+    { regex: /\|[^|\n]*\|/, token: 'string' },
+    { regex: /(?:left of|right of)\b/, token: 'keyword' },
+    { regex: /\b(?:subgraph|end|direction|participant|actor|loop|alt|else|opt|par|and|critical|break|rect|Note|note|over|activate|deactivate|autonumber|classDef|class|style|linkStyle|click|title|section|dateFormat|axisFormat|tickInterval|excludes|includes|todayMarker|state|commit|branch|checkout|switch|merge|cherry-pick|id|tag|type|x-axis|y-axis|bar|line|quadrant-[1-4]|showData|accTitle|accDescr|namespace|as|box|create|destroy|root|horizontal)\b/, token: 'keyword' },
+    { regex: /\b(?:TB|TD|BT|RL|LR|done|active|crit|milestone|after|PK|FK|UK|HIGHLIGHT|REVERSE|NORMAL)\b/, token: 'atom' },
+    { regex: /\[\*\]/, token: 'atom' },
+    { regex: /-?\b\d+(?:\.\d+)?(?:d|w|h|m|s)?\b/, token: 'number' },
+    { regex: /[\[\]{}()]/, token: 'bracket' },
+    { regex: /[:;&]/, token: 'operator' }
+  ],
+  directive: [
+    { regex: /.*?\}%%/, token: 'meta', next: 'start' },
+    { regex: /.*/, token: 'meta' }
+  ],
+  front: [
+    { regex: /---\s*$/, sol: true, token: 'meta', next: 'start' },
+    { regex: /.*/, token: 'variable-2' }
+  ],
+  meta: { lineComment: '%%' }
+});
+
+const prefs = Object.assign({ auto: true, wrap: false, font: 14, theme: 'system', mtheme: 'auto', look: 'classic', close: true, grid: true, keep: true, left: 40, drawer: 200, drawerOpen: true }, store.get('prefs', {}));
+function savePrefs() { store.set('prefs', prefs); }
+
+const cm = CodeMirror($('#editor'), {
+  mode: 'mermaid', lineNumbers: true, styleActiveLine: true, matchBrackets: true, autoCloseBrackets: prefs.close ? '()[]{}""' : false,
+  indentUnit: 4, tabSize: 4, indentWithTabs: false, lineWrapping: prefs.wrap, gutters: ['err-gutter', 'CodeMirror-linenumbers'],
+  extraKeys: {
+    'Ctrl-Enter': () => draw(), 'Cmd-Enter': () => draw(),
+    'Ctrl-S': () => saveNow(true), 'Cmd-S': () => saveNow(true),
+    'Ctrl-/': c => c.toggleComment(), 'Cmd-/': c => c.toggleComment(),
+    Tab: c => c.somethingSelected() ? c.indentSelection('add') : c.replaceSelection('    ', 'end'),
+    'Shift-Tab': c => c.indentSelection('subtract')
+  }
+});
+
+/* ---------- Projects ---------- */
+let projects = store.get('projects', null);
+let currentId = store.get('current', null);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+if (!projects || typeof projects !== 'object' || !Object.keys(projects).length) {
+  const id = uid();
+  projects = { [id]: { id, name: 'My first diagram', code: STARTER, updated: Date.now() } };
+  currentId = id;
+}
+if (!projects[currentId]) currentId = Object.values(projects).sort((a, b) => b.updated - a.updated)[0].id;
+let current = projects[currentId];
+
+let saveTimer = null;
+function persist() {
+  const ok = store.set('projects', projects) && store.set('current', currentId);
+  const s = $('#saveState');
+  s.textContent = ok ? 'Saved' : 'Not saved: this browser blocks storage';
+  s.classList.toggle('warn', !ok);
+}
+function saveSoon() { $('#saveState').textContent = 'Saving…'; $('#saveState').classList.remove('warn'); clearTimeout(saveTimer); saveTimer = setTimeout(persist, 500); }
+function saveNow(announce) { clearTimeout(saveTimer); current.code = cm.getValue(); current.updated = Date.now(); persist(); if (announce) toast(store.ok ? 'Saved in this browser' : 'Couldn’t save: storage is blocked here'); }
+
+function loadProject(id) {
+  if (current) { current.code = cm.getValue(); }
+  currentId = id; current = projects[id];
+  $('#projName').value = current.name;
+  suppressChange = true; cm.setValue(current.code); cm.clearHistory(); suppressChange = false;
+  cm.setCursor(0, 0);
+  persist(); updateFname(); onCodeShape(); needsFit = true; draw();
+}
+function newProject(name, code) {
+  const id = uid();
+  projects[id] = { id, name, code, updated: Date.now() };
+  loadProject(id);
+}
+function updateFname() { $('#fname').textContent = slug(current.name) + '.mmd'; }
+function slug(s) { return (s || 'diagram').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'diagram'; }
+
+$('#projName').addEventListener('input', e => { current.name = e.target.value || 'Untitled'; current.updated = Date.now(); updateFname(); saveSoon(); });
+$('#projName').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); cm.focus(); } });
+
+let suppressChange = false, liveTimer = null;
+cm.on('change', () => {
+  if (suppressChange) return;
+  current.code = cm.getValue(); current.updated = Date.now(); saveSoon(); onCodeShape();
+  if (prefs.auto) { clearTimeout(liveTimer); liveTimer = setTimeout(draw, 350); }
+  else setStatus('busy', 'Press Draw to update');
+});
+cm.on('cursorActivity', () => { const p = cm.getCursor(); $('#cursorPos').textContent = `Ln ${p.line + 1}, Col ${p.ch + 1}`; });
+
+let shownType = null;
+function onCodeShape() {
+  const t = detectType(cm.getValue());
+  $('#typeChip').textContent = (TYPE_LABEL[t] || (t ? 'Unknown type' : 'No type yet')).toUpperCase();
+  const key = CHEATS[CHEAT_ALIAS[t] || t] ? (CHEAT_ALIAS[t] || t) : (TYPE_LABEL[t] ? null : '_start');
+  if (key === shownType) return;
+  shownType = key;
+  const list = key ? CHEATS[key] : [];
+  $('#cheatHint').textContent = key === '_start' ? 'Pick a diagram type to start with' : list.length ? `${TYPE_LABEL[t]}: click one to add it on a new line` : `No cheat sheet for ${TYPE_LABEL[t]} yet`;
+  $('#cheat').innerHTML = '';
+  list.forEach(([code, desc]) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    const c = document.createElement('code'); c.textContent = code.split('\n')[0] + (code.includes('\n') ? ' …' : '');
+    const s = document.createElement('span'); s.textContent = desc;
+    b.append(c, s); b.title = code;
+    b.addEventListener('click', () => insertSnippet(code, key === '_start'));
+    $('#cheat').appendChild(b);
+  });
+}
+function insertSnippet(code, atTop) {
+  if (atTop) {
+    cm.replaceRange(code + '\n', { line: frontmatterLines(cm.getValue()), ch: 0 });
+    cm.setCursor({ line: frontmatterLines(cm.getValue()) + 1, ch: 0 });
+  } else {
+    const ln = cm.getCursor().line;
+    const text = cm.getLine(ln);
+    const isHeader = new RegExp('^\\s*(' + TYPES_RE + ')(?![\\w-])').test(text);
+    let ind = (/^\s*/.exec(text) || [''])[0];
+    if (isHeader || !text.trim()) ind = isHeader ? ind + '    ' : (ln > 0 ? (/^\s*/.exec(cm.getLine(ln - 1)) || [''])[0] : '    ');
+    const body = code.split('\n').map(l => ind + l).join('\n');
+    if (!text.trim()) cm.replaceRange(body, { line: ln, ch: 0 }, { line: ln, ch: text.length });
+    else cm.replaceRange('\n' + body, { line: ln, ch: text.length });
+    const end = ln + (text.trim() ? 1 : 0) + code.split('\n').length - 1;
+    cm.setCursor({ line: end, ch: cm.getLine(end).length });
+    flash(ln + (text.trim() ? 1 : 0), end);
+  }
+  cm.focus();
+}
+function flash(a, b) {
+  for (let i = a; i <= b; i++) cm.addLineClass(i, 'background', 'flash-line');
+  setTimeout(() => { for (let i = a; i <= b; i++) cm.removeLineClass(i, 'background', 'flash-line'); }, 700);
+}
+
+/* ---------- Mermaid ---------- */
+function uiDark() {
+  if (prefs.theme === 'dark') return true;
+  if (prefs.theme === 'light') return false;
+  return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function mTheme() { return prefs.mtheme === 'auto' ? (uiDark() ? 'dark' : 'default') : prefs.mtheme; }
+function paperDark() { return mTheme() === 'dark'; }
+function configureMermaid(extra) {
+  mermaid.initialize(Object.assign({ startOnLoad: false, securityLevel: 'strict', theme: mTheme(), look: prefs.look, suppressErrorRendering: true }, extra || {}));
+}
+
+const stage = $('#stage'), pz = $('#pz');
+let renderSeq = 0, hasDiagram = false, natW = 0, natH = 0, needsFit = true, lastType = null, errMark = null;
+
+function setStatus(state, text) { const p = $('#statusPill'); p.dataset.state = state; p.firstElementChild.textContent = text; p.title = text; }
+function cleanup(id) { ['d' + id, id].forEach(x => { const n = document.getElementById(x); if (n && !pz.contains(n)) n.remove(); }); }
+
+async function draw() {
+  clearTimeout(liveTimer);
+  const code = cm.getValue();
+  const seq = ++renderSeq;
+  stage.dataset.paper = paperDark() ? 'dark' : 'light';
+  if (!code.trim() || !detectType(code)) {
+    pz.innerHTML = ''; hasDiagram = false; natW = natH = 0;
+    $('#emptyState').hidden = false; clearError(); setStatus('ok', 'Empty'); return;
+  }
+  $('#emptyState').hidden = true;
+  setStatus('busy', 'Drawing…');
+  const id = 'fm' + seq;
+  try {
+    configureMermaid();
+    await mermaid.parse(code);
+    const out = await mermaid.render(id, code);
+    cleanup(id);
+    if (seq !== renderSeq) return;
+    pz.innerHTML = out.svg;
+    if (out.bindFunctions) out.bindFunctions(pz);
+    const svg = pz.querySelector('svg');
+    const vb = svg.viewBox && svg.viewBox.baseVal;
+    natW = vb && vb.width ? vb.width : svg.getBoundingClientRect().width || 400;
+    natH = vb && vb.height ? vb.height : svg.getBoundingClientRect().height || 300;
+    svg.setAttribute('width', natW); svg.setAttribute('height', natH);
+    svg.style.maxWidth = 'none';
+    hasDiagram = true;
+    pz.classList.remove('stale');
+    clearError();
+    setStatus('ok', 'Drawn');
+    const t = detectType(code);
+    if (needsFit || !prefs.keep || t !== lastType) fit(); else applyView();
+    lastType = t; needsFit = false;
+  } catch (err) {
+    cleanup(id);
+    if (seq !== renderSeq) return;
+    showError(err, code);
+  }
+}
+
+function explain(msg) {
+  const m = String(msg || '');
+  if (/No diagram type detected|UnknownDiagramError/i.test(m)) return 'The first line has to say what kind of diagram this is, like <code>flowchart TD</code> or <code>sequenceDiagram</code>. Check the spelling: capital letters matter.';
+  if (/got 'EOF'|end of input/i.test(m)) return 'The diagram stops too early. Is a closing bracket, a quote or an <code>end</code> missing?';
+  if (/Lexical error/i.test(m)) return 'There’s a character here Mermaid doesn’t understand. Words with symbols like <code>( ) # ;</code> work best inside "double quotes".';
+  if (/Expecting/i.test(m)) return 'Mermaid didn’t expect what it found on this line. Check the arrow (like <code>--></code>), that brackets match, and that labels with odd symbols are in "quotes".';
+  if (/Invalid date|dateFormat/i.test(m)) return 'A date doesn’t match the <code>dateFormat</code> line. With <code>YYYY-MM-DD</code>, write dates like 2026-11-08.';
+  return 'Mermaid couldn’t read this. Look at the line it points to, or compare with an example from the Examples menu.';
+}
+function showError(err, code) {
+  const raw = String((err && (err.message || err.str)) || err || 'Unknown error');
+  let line = null;
+  const m = /on line (\d+)/i.exec(raw);
+  if (err && err.hash && err.hash.loc && err.hash.loc.first_line) line = err.hash.loc.first_line;
+  else if (m) line = +m[1];
+  if (line != null) line = sourceLine(code, line);
+  markErrorLine(line);
+  $('#errTitle').textContent = line ? `Problem on line ${line}` : 'Mermaid got stuck';
+  $('#errNote').textContent = hasDiagram ? 'Showing the last diagram that worked' : '';
+  $('#errTip').innerHTML = '<b>Tip:</b> ' + explain(raw);
+  $('#errRaw').textContent = raw.replace(/^Error:\s*/, '').trim();
+  $('#errGo').hidden = !line;
+  $('#errGo').onclick = () => { showMobile('code'); cm.focus(); cm.setCursor({ line: line - 1, ch: cm.getLine(line - 1).length }); cm.scrollIntoView(null, 80); };
+  $('#errCard').hidden = false;
+  pz.classList.toggle('stale', hasDiagram);
+  setStatus('error', line ? `Error on line ${line}` : 'Error');
+  $('#mDot').hidden = false;
+}
+function markErrorLine(line) {
+  if (errMark != null) { cm.removeLineClass(errMark, 'background', 'err-line'); cm.setGutterMarker(errMark, 'err-gutter', null); errMark = null; }
+  if (!line) return;
+  const h = cm.getLineHandle(line - 1); if (!h) return;
+  cm.addLineClass(h, 'background', 'err-line');
+  const d = document.createElement('div'); d.className = 'err-dot'; d.title = 'Mermaid found a problem here';
+  cm.setGutterMarker(h, 'err-gutter', d);
+  errMark = h;
+}
+function clearError() { $('#errCard').hidden = true; markErrorLine(null); $('#mDot').hidden = true; pz.classList.remove('stale'); }
+
+/* ---------- Pan and zoom ---------- */
+const view = { x: 0, y: 0, k: 1, fitted: true };
+const clampK = k => Math.min(8, Math.max(0.05, k));
+function applyView() { pz.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.k})`; $('#zVal').textContent = Math.round(view.k * 100) + '%'; }
+function fit() {
+  const r = stage.getBoundingClientRect();
+  if (!natW || !r.width || !r.height) { needsFit = true; return; }
+  const pad = Math.min(40, r.width * 0.06);
+  view.k = clampK(Math.min((r.width - pad * 2) / natW, (r.height - pad * 2) / natH, 2));
+  view.x = (r.width - natW * view.k) / 2; view.y = (r.height - natH * view.k) / 2;
+  view.fitted = true; applyView();
+}
+function zoomAt(f, cx, cy) {
+  const k2 = clampK(view.k * f), ff = k2 / view.k;
+  view.x = cx - (cx - view.x) * ff; view.y = cy - (cy - view.y) * ff; view.k = k2; view.fitted = false; applyView();
+}
+function zoomCenter(f) { const r = stage.getBoundingClientRect(); zoomAt(f, r.width / 2, r.height / 2); }
+$('#zIn').addEventListener('click', () => zoomCenter(1.25));
+$('#zOut').addEventListener('click', () => zoomCenter(0.8));
+$('#zVal').addEventListener('click', () => zoomCenter(1 / view.k));
+$('#zFit').addEventListener('click', fit);
+stage.addEventListener('wheel', e => {
+  if (e.target.closest('.err-card')) return;
+  e.preventDefault();
+  const r = stage.getBoundingClientRect();
+  const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+  zoomAt(Math.exp(-dy * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
+}, { passive: false });
+const ptrs = new Map(); let pinch = null;
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('.err-card') || e.button > 0) return;
+  stage.setPointerCapture(e.pointerId);
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  stage.classList.add('panning');
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) }; }
+});
+stage.addEventListener('pointermove', e => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  const r = stage.getBoundingClientRect();
+  if (ptrs.size === 1) {
+    view.x += e.clientX - p.x; view.y += e.clientY - p.y; view.fitted = false; applyView();
+  } else if (ptrs.size === 2 && pinch) {
+    p.x = e.clientX; p.y = e.clientY;
+    const [a, b] = [...ptrs.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (pinch.d) zoomAt(d / pinch.d, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+    pinch.d = d; return;
+  }
+  p.x = e.clientX; p.y = e.clientY;
+});
+const endPtr = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) stage.classList.remove('panning'); };
+stage.addEventListener('pointerup', endPtr); stage.addEventListener('pointercancel', endPtr);
+stage.addEventListener('dblclick', e => { if (!e.target.closest('.err-card')) fit(); });
+stage.addEventListener('keydown', e => {
+  if (e.key === '0') fit(); else if (e.key === '+' || e.key === '=') zoomCenter(1.25); else if (e.key === '-') zoomCenter(0.8);
+  else if (e.key.startsWith('Arrow')) { const s = 40; view.x += e.key === 'ArrowLeft' ? s : e.key === 'ArrowRight' ? -s : 0; view.y += e.key === 'ArrowUp' ? s : e.key === 'ArrowDown' ? -s : 0; applyView(); }
+  else return;
+  e.preventDefault();
+});
+new ResizeObserver(() => { if (needsFit || view.fitted) fit(); }).observe(stage);
+
+$('#btnFull').addEventListener('click', () => {
+  const v = $('#viewer');
+  if (document.fullscreenElement) document.exitFullscreen();
+  else if (v.requestFullscreen) v.requestFullscreen().catch(() => toast('Full screen isn’t allowed here'));
+  else toast('Full screen isn’t available here');
+});
+
+/* ---------- Export ---------- */
+let downloadsNS = null;
+try { if (window.claude && typeof window.claude.use === 'function') window.claude.use('downloads').then(d => { downloadsNS = d; }, () => {}); } catch (e) {}
+async function saveFile(name, data, mime) {
+  if (downloadsNS) {
+    try { await downloadsNS.save({ filename: name, data }); toast(`Saved ${name}`); }
+    catch (err) { if (!err || err.code !== 'declined') toast('Couldn’t save the file here. Try a Copy option instead.'); }
+    return;
+  }
+  const blob = data instanceof Blob ? data : new Blob([data], { type: mime });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast(`Saving ${name}`);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e2) {}
+    ta.remove(); return ok;
+  }
+}
+const PAPER = () => paperDark() ? '#12161E' : '#FFFFFF';
+function currentSvgText() {
+  const svg = pz.querySelector('svg'); if (!svg || !hasDiagram || !$('#errCard').hidden) return null;
+  const c = svg.cloneNode(true);
+  c.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  c.style.backgroundColor = PAPER();
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(c);
+}
+function needDiagram() { toast($('#errCard').hidden ? 'Draw a diagram first' : 'Fix the problem first, then try again'); }
+let exportSeq = 0;
+async function exportPng() {
+  if (!hasDiagram || !$('#errCard').hidden) return needDiagram();
+  const code = cm.getValue();
+  let svgText;
+  const id = 'fmx' + (++exportSeq);
+  try {
+    configureMermaid({ htmlLabels: false, flowchart: { htmlLabels: false }, class: { htmlLabels: false } });
+    svgText = (await mermaid.render(id, code)).svg;
+  } catch (e) { cleanup(id); return toast('Couldn’t draw the picture. Try .svg instead.'); }
+  finally { cleanup(id); configureMermaid(); }
+  const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+  const el = doc.documentElement;
+  if (el.nodeName !== 'svg' || doc.querySelector('parsererror')) return toast('Couldn’t make a picture of this one. Try .svg instead.');
+  const vb = (el.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+  const w = vb[2] || natW, h = vb[3] || natH;
+  const scale = Math.max(1, Math.min(3, 8000 / Math.max(w, h)));
+  el.setAttribute('width', w); el.setAttribute('height', h); el.style.maxWidth = 'none';
+  const xml = new XMLSerializer().serializeToString(el);
+  const img = new Image();
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+  try { await img.decode(); } catch (e) { return toast('Couldn’t make a picture of this one. Try .svg instead.'); }
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(w * scale); cv.height = Math.round(h * scale);
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = PAPER(); ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.drawImage(img, 0, 0, cv.width, cv.height);
+  let blob;
+  try { blob = await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error('blank')), 'image/png')); }
+  catch (e) { return toast('This diagram type can’t be saved as .png here. Use .svg instead.'); }
+  saveFile(slug(current.name) + '.png', blob, 'image/png');
+}
+const mdBlock = () => '```mermaid\n' + cm.getValue().replace(/\s+$/, '') + '\n```\n';
+
+$('#fileMenu').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  closeMenus();
+  const act = b.dataset.act;
+  if (act === 'png') exportPng();
+  else if (act === 'svg') { const t = currentSvgText(); if (!t) return needDiagram(); saveFile(slug(current.name) + '.svg', t, 'image/svg+xml'); }
+  else if (act === 'copy-svg') { const t = currentSvgText(); if (!t) return needDiagram(); toast(await copyText(t) ? 'SVG code copied' : 'Couldn’t copy here'); }
+  else if (act === 'md') saveFile(slug(current.name) + '.md', `# ${current.name}\n\n` + mdBlock(), 'text/markdown');
+  else if (act === 'copy-code') toast(await copyText(cm.getValue()) ? 'Mermaid code copied' : 'Couldn’t copy here');
+  else if (act === 'copy-md') toast(await copyText(mdBlock()) ? 'Markdown block copied' : 'Couldn’t copy here');
+  else if (act === 'open') $('#fileInput').click();
+});
+$('#fileInput').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  let text = await f.text();
+  if (/\.(md|markdown)$/i.test(f.name)) {
+    const m = /```\s*mermaid[^\n]*\n([\s\S]*?)```/i.exec(text);
+    if (!m) return toast('No ```mermaid block found in that file');
+    text = m[1];
+  }
+  newProject(f.name.replace(/\.[^.]+$/, '') || 'Opened diagram', text.replace(/\r\n/g, '\n'));
+  toast(`Opened ${f.name}`);
+});
+
+/* ---------- Menus ---------- */
+function closeMenus() { $$('.menu').forEach(m => m.hidden = true); $$('[data-menu]').forEach(b => b.setAttribute('aria-expanded', 'false')); }
+$$('[data-menu]').forEach(btn => btn.addEventListener('click', e => {
+  e.stopPropagation();
+  const m = document.getElementById(btn.dataset.menu);
+  const open = m.hidden;
+  closeMenus();
+  if (!open) return;
+  if (m.id === 'projectsMenu') buildProjects();
+  m.hidden = false; btn.setAttribute('aria-expanded', 'true');
+  const r = btn.getBoundingClientRect(), mw = m.offsetWidth;
+  m.style.top = (r.bottom + 6) + 'px';
+  m.style.left = Math.max(12, Math.min(r.left, innerWidth - mw - 12)) + 'px';
+}));
+document.addEventListener('click', e => { if (!e.target.closest('.menu')) closeMenus(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(); });
+$('.tools').addEventListener('scroll', closeMenus, { passive: true });
+window.addEventListener('resize', closeMenus);
+
+(function buildExamples() {
+  const m = $('#examplesMenu');
+  m.innerHTML = '<h3>Start from an example</h3><div class="ex-grid"></div><hr><div class="mi-sub" style="padding:4px 10px 6px;color:var(--ink-3);font-size:12.5px">Each one opens as a new diagram, so nothing you’ve made is replaced.</div>';
+  const g = m.querySelector('.ex-grid');
+  EXAMPLES.forEach(ex => {
+    const b = document.createElement('button');
+    b.className = 'menu-item'; b.setAttribute('role', 'menuitem');
+    b.innerHTML = `<span class="ex-ico"></span><span class="mi-text"><span class="mi-title"></span><span class="mi-sub"></span></span>`;
+    b.querySelector('.ex-ico').textContent = ex.ico; b.querySelector('.mi-title').textContent = ex.name; b.querySelector('.mi-sub').textContent = ex.sub;
+    b.addEventListener('click', () => { closeMenus(); newProject(ex.name + ' example', ex.code); toast(`Opened the ${ex.name.toLowerCase()} example`); });
+    g.appendChild(b);
+  });
+})();
+
+function ago(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' h ago'; return new Date(t).toLocaleDateString();
+}
+function buildProjects() {
+  const m = $('#projectsMenu'); m.innerHTML = '';
+  const add = (title, sub, svg, fn) => {
+    const b = document.createElement('button'); b.className = 'menu-item'; b.setAttribute('role', 'menuitem');
+    b.innerHTML = svg + '<span class="mi-text"><span class="mi-title"></span><span class="mi-sub"></span></span>';
+    b.querySelector('.mi-title').textContent = title; b.querySelector('.mi-sub').textContent = sub;
+    b.addEventListener('click', () => { closeMenus(); fn(); }); m.appendChild(b);
+  };
+  add('New blank diagram', 'Starts with an empty flowchart', '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>', () => { newProject('Untitled diagram', 'flowchart TD\n    A[Start] --> B[Next]\n'); cm.focus(); });
+  add('Duplicate this diagram', 'Make a copy to try something out', '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6.5" y="6.5" width="10" height="10" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 4.5v-.2c0-.7-.6-1.3-1.3-1.3H4.8c-.7 0-1.3.6-1.3 1.3v7.4c0 .7.6 1.3 1.3 1.3H5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>', () => { newProject(current.name + ' (copy)', cm.getValue()); toast('Made a copy'); });
+  m.appendChild(document.createElement('hr'));
+  const h = document.createElement('h3'); h.textContent = 'Saved in this browser'; m.appendChild(h);
+  Object.values(projects).sort((a, b) => b.updated - a.updated).forEach(p => {
+    const row = document.createElement('div'); row.className = 'proj-row' + (p.id === currentId ? ' current' : '');
+    const b = document.createElement('button'); b.className = 'menu-item'; b.setAttribute('role', 'menuitem');
+    b.innerHTML = '<span class="mi-text"><span class="mi-title"></span><span class="mi-sub"></span></span>';
+    b.querySelector('.mi-title').textContent = p.name;
+    b.querySelector('.mi-sub').textContent = (TYPE_LABEL[detectType(p.code)] || 'Diagram') + ' · ' + ago(p.updated);
+    b.addEventListener('click', () => { closeMenus(); if (p.id !== currentId) loadProject(p.id); });
+    const del = document.createElement('button'); del.className = 'icon-btn sm'; del.title = 'Delete'; del.setAttribute('aria-label', 'Delete ' + p.name);
+    del.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 6h11M8 6V4.5h4V6M6 6l.7 9.5c0 .6.5 1 1.1 1h4.4c.6 0 1.1-.4 1.1-1L14 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    del.addEventListener('click', e => {
+      e.stopPropagation();
+      const c = document.createElement('span'); c.className = 'confirm'; c.textContent = 'Delete? ';
+      const yes = document.createElement('button'); yes.className = 'yes'; yes.textContent = 'Delete';
+      const no = document.createElement('button'); no.textContent = 'Keep';
+      c.append(yes, no); del.replaceWith(c);
+      no.addEventListener('click', ev => { ev.stopPropagation(); buildProjects(); });
+      yes.addEventListener('click', ev => {
+        ev.stopPropagation();
+        delete projects[p.id];
+        if (!Object.keys(projects).length) { const id = uid(); projects[id] = { id, name: 'My first diagram', code: STARTER, updated: Date.now() }; }
+        if (p.id === currentId) { current = null; loadProject(Object.values(projects).sort((a, b) => b.updated - a.updated)[0].id); } else persist();
+        buildProjects(); toast('Deleted ' + p.name);
+      });
+    });
+    row.append(b, del); m.appendChild(row);
+  });
+}
+
+/* ---------- Toolbar controls ---------- */
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+$('#btnRender').addEventListener('click', () => { needsFit = !prefs.keep; draw(); });
+const optAuto = $('#optAuto'); optAuto.checked = prefs.auto;
+optAuto.addEventListener('change', () => { prefs.auto = optAuto.checked; savePrefs(); if (prefs.auto) draw(); });
+
+function applyWrap() { cm.setOption('lineWrapping', prefs.wrap); $('#btnWrap').setAttribute('aria-pressed', prefs.wrap); }
+$('#btnWrap').addEventListener('click', () => { prefs.wrap = !prefs.wrap; savePrefs(); applyWrap(); });
+function applyFont() { document.documentElement.style.setProperty('--code-size', prefs.font + 'px'); $('#fontVal').textContent = prefs.font; cm.refresh(); }
+$('#fontDown').addEventListener('click', () => { prefs.font = Math.max(10, prefs.font - 1); savePrefs(); applyFont(); });
+$('#fontUp').addEventListener('click', () => { prefs.font = Math.min(28, prefs.font + 1); savePrefs(); applyFont(); });
+
+const THEME_ICONS = {
+  system: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="4" width="15" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 17h6M10 4v10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 4h6c.8 0 1.5.7 1.5 1.5v7c0 .8-.7 1.5-1.5 1.5h-6Z" fill="currentColor" opacity=".35"/></svg>',
+  light: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  dark: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
+};
+const THEME_NAMES = { system: 'match system', light: 'light', dark: 'dark' };
+function applyTheme() {
+  if (prefs.theme === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', prefs.theme);
+  const b = $('#btnTheme'); b.innerHTML = THEME_ICONS[prefs.theme]; b.title = 'Theme: ' + THEME_NAMES[prefs.theme];
+}
+$('#btnTheme').addEventListener('click', () => {
+  prefs.theme = { system: 'light', light: 'dark', dark: 'system' }[prefs.theme]; savePrefs(); applyTheme();
+  toast('Theme: ' + THEME_NAMES[prefs.theme]);
+  if (prefs.mtheme === 'auto') draw();
+});
+if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (prefs.theme === 'system' && prefs.mtheme === 'auto') draw(); });
+
+$('#selTheme').value = prefs.mtheme;
+$('#selTheme').addEventListener('change', e => { prefs.mtheme = e.target.value; savePrefs(); draw(); });
+$('#selLook').value = prefs.look;
+$('#selLook').addEventListener('change', e => { prefs.look = e.target.value; savePrefs(); draw(); });
+
+const bindOpt = (id, key, fn) => { const el = $(id); el.checked = prefs[key]; el.addEventListener('change', () => { prefs[key] = el.checked; savePrefs(); fn && fn(); }); };
+bindOpt('#optClose', 'close', () => cm.setOption('autoCloseBrackets', prefs.close ? '()[]{}""' : false));
+bindOpt('#optGrid', 'grid', () => stage.classList.toggle('grid', prefs.grid));
+bindOpt('#optKeep', 'keep', () => { if (!prefs.keep) fit(); });
+stage.classList.toggle('grid', prefs.grid);
+
+/* Drawer */
+function applyDrawer() {
+  $('#drawer').classList.toggle('closed', !prefs.drawerOpen);
+  $('#drawerToggle').setAttribute('aria-expanded', prefs.drawerOpen);
+  $('#splitH').style.visibility = prefs.drawerOpen ? '' : 'hidden';
+  document.documentElement.style.setProperty('--drawer', prefs.drawer + 'px');
+  cm.refresh();
+}
+$('#drawerToggle').addEventListener('click', () => { prefs.drawerOpen = !prefs.drawerOpen; savePrefs(); applyDrawer(); });
+
+/* Splitters */
+function dragSplit(el, onMove) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault(); el.setPointerCapture(e.pointerId); app.classList.add('dragging');
+    const mv = ev => onMove(ev);
+    const up = () => { el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); app.classList.remove('dragging'); savePrefs(); cm.refresh(); };
+    el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up);
+  });
+}
+function setLeft(pct) { prefs.left = Math.max(20, Math.min(75, pct)); document.documentElement.style.setProperty('--left', prefs.left + '%'); }
+dragSplit($('#splitV'), ev => { const r = $('#workspace').getBoundingClientRect(); setLeft((ev.clientX - r.left) / r.width * 100); });
+dragSplit($('#splitH'), ev => {
+  const r = $('.left').getBoundingClientRect();
+  prefs.drawer = Math.max(80, Math.min(r.height - 120, r.bottom - ev.clientY - 5));
+  document.documentElement.style.setProperty('--drawer', prefs.drawer + 'px'); cm.refresh();
+});
+$('#splitV').addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { setLeft(prefs.left + (e.key === 'ArrowLeft' ? -2 : 2)); savePrefs(); cm.refresh(); e.preventDefault(); } });
+$('#splitH').addEventListener('keydown', e => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { prefs.drawer = Math.max(80, prefs.drawer + (e.key === 'ArrowUp' ? 16 : -16)); savePrefs(); applyDrawer(); e.preventDefault(); } });
+
+/* Mobile */
+function showMobile(v) {
+  app.dataset.mview = v;
+  $$('#mobileNav [data-mv]').forEach(b => b.setAttribute('aria-selected', b.dataset.mv === v));
+  if (v === 'code') setTimeout(() => cm.refresh(), 0); else setTimeout(() => { if (needsFit || view.fitted) fit(); }, 0);
+}
+$$('#mobileNav [data-mv]').forEach(b => b.addEventListener('click', () => showMobile(b.dataset.mv)));
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveNow(true); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !cm.hasFocus()) { e.preventDefault(); draw(); }
+});
+window.addEventListener('pagehide', () => { if (current) { current.code = cm.getValue(); persist(); } });
+
+/* ---------- Start ---------- */
+applyTheme(); applyWrap(); applyFont(); setLeft(prefs.left); applyDrawer();
+$('#projName').value = current.name; updateFname();
+suppressChange = true; cm.setValue(current.code); cm.clearHistory(); suppressChange = false;
+onCodeShape(); $('#saveState').textContent = '';
+draw();
+})();
+</script>
