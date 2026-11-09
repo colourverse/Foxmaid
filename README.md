@@ -2,7 +2,9 @@
 
 A friendly Mermaid diagram editor and viewer for the classroom, and a sibling to [FoxEd](https://github.com/colourverse/Foxed).
 
-Open `index.html` in a browser. It is one self-contained file. It loads CodeMirror and Mermaid from jsdelivr, and fonts from Google Fonts.
+**Try it live: https://colourverse.github.io/Foxmaid/**
+
+Or open `index.html` in a browser. It is one self-contained file. It loads CodeMirror and Mermaid from jsdelivr, and fonts from Google Fonts.
 
 ## Features
 
